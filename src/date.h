@@ -7,13 +7,16 @@
 
 // Common calendar info
 enum Weekdays {sunday, monday, tuesday, wednesday, thursday, friday, saturday};
-static const unsigned int days_in_months[] = {31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31};
+const unsigned int days_in_months[] = {31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31};
 const unsigned int months_in_yr = 12;
 
 struct Date {
 	unsigned int day;
 	unsigned int month;
 	unsigned int year;
+
+	Date() = default;
+	Date(Date &) = default;
 };	
 
 class Date_Factory {

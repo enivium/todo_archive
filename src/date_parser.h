@@ -11,6 +11,8 @@
 class Date_Parser {
 	private:
 		std::shared_ptr<Date_Parser> next;
+	protected:
+		static void add_days(std::shared_ptr<Date>, unsigned int);
 	public:
 		Date_Parser();
 
@@ -37,7 +39,7 @@ class Day_Word_Parser : public Date_Parser {
 						    std::shared_ptr<Date>, unsigned int) override;
 };
 
-class Num_Days_Parser : public Date_Parser {
+class Num_Units_Parser : public Date_Parser {
 	public:
 		virtual std::shared_ptr<Date> parse(std::string,
 						    std::shared_ptr<Date>, unsigned int) override;

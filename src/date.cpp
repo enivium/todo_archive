@@ -3,46 +3,23 @@
 
 #include "date.h"
 
-#include <algorithm>
-#include <sstream>
-
 using namespace std;
 
-Date_Factory::instance = nullptr;
-Date_Factory::current_date = nullptr;
-
-/*--- Date_Factory Methods ---*/
-Date_Factory::Date_Factory() {
-	time_t current_raw = time(0);
-	tm current;
-	localtime_s(&current, &current_raw);	
-
-	current_date = make_shared<Date>();
-	current_date->day = current.tm_mday;		
-	current_date->month = current.tm_mon + 1;
-	current_date->year = current.tm_year + 1900;
-	current_weekday = current.tm_wday;
-}
-
-shared_ptr<Date_Factory> Date_Factory::get_instance() {
-	if (instance == nullptr) {
-		instance = make_shared<Date_Factory>();
+/*--- Date Methods ---*/
+unsigned int Date::days_in_month() {
+	if (month < 1 || month > months_in_yr) {
+		return 0;
 	}
 
-	return instance;
+	unsigned int num_days = days_in_months[month-1];
+	if (month == 2) {
+		if ((year % 4 == 0) && (year % 100 != 0)) {
+			num_days += 1;
+		}
+	}
+	return num_days;
 }
 
-shared_ptr<Date> get_current_date() {
-	return current_date;
-}
-	
-unsigned int get_current_weekday() {
-	return current_weekday;
-}
-
-shared_ptr<Date> make_date(string date_string) {
-	// TODO: Implement
-}
 
 /*--- General Functions ---*/
 // Comparison operator overloads

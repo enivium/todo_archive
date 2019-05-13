@@ -21,15 +21,7 @@ void Date_Parser::add_days(shared_ptr<Date> date, unsigned int days_to_add) {
 
 	date->day += days_to_add;
 
-	bool leap_year = false;
-	if ((date->year % 4 == 0) && (date->year % 100 != 0)) {
-		leap_year = true;
-	}
-
-	unsigned int mdays = days_in_months[date->month];
-	if (date->month == 2 && leap_year) {
-		mdays += 1;
-	}
+	unsigned int mdays = date->days_in_month();
 
 	while (date->day > mdays) {
 		date->day -= mdays;
@@ -38,17 +30,9 @@ void Date_Parser::add_days(shared_ptr<Date> date, unsigned int days_to_add) {
 		if (date->month > months_in_yr) {
 			date->month -= months_in_yr;
 			date->year += 1;
-			if ((date->year % 4 == 0) && (date->year % 100 != 0)) {
-				leap_year = true;
-			} else {
-				leap_year = false;
-			}
 		}
 
-		mdays = days_in_months[date->month];
-		if (date->month == 2 && leap_year) {
-			mdays += 1;
-		}
+		mdays = date->days_in_month();
 	}
 }	
 

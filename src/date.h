@@ -3,41 +3,23 @@
 
 #pragma once
 
-#include <memory>
-
 // Common calendar info
 enum Weekdays {sunday, monday, tuesday, wednesday, thursday, friday, saturday};
 const unsigned int days_in_months[] = {31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31};
 const unsigned int months_in_yr = 12;
+const unsigned int valid_yr_range = 100;
+const unsigned int tm_base_yr = 1900;
 
-struct Date {
+class Date {
 	unsigned int day;
 	unsigned int month;
 	unsigned int year;
 
 	Date() = default;
 	Date(Date &) = default;
+
+	unsigned int days_in_month();
 };	
-
-class Date_Factory {
-/* Parses inputs and constructs dates */
-	private:
-		Date_Factory();
-		
-		static std::shared_ptr<Date_Factory> instance;
-		
-		std::shared_ptr<Date> current_date;
-		unsigned int current_weekday;
-		
-		// TODO: Make parsing methods
-	public:
-		std::shared_ptr<Date_Factory> get_instance();
-
-		std::shared_ptr<Date> get_current_date();		
-		unsigned int get_current_weekday();
-
-		std::shared_ptr<Date> make_date(std::string);   
-};
 
 // Date comparison operator overloads
 bool operator==(const Date &lhs, const Date &rhs); 

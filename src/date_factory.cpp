@@ -44,6 +44,23 @@ unsigned int Date_Factory::get_current_weekday() {
 	return current_weekday;
 }
 
+
+shared_ptr<Date> Date_Factory::make_date(string date_string) {
+	for (auto &c : date_string) {
+		tolower(c);
+	}
+
+	return parser->parse(date_string, current_date, current_weekday);	
+}
+
+shared_ptr<Date> Date_Factory::make_date(string date_string, shared_ptr<Date> ref_date) {
+	for (auto &c : date_string) {
+		tolower(c);
+	}
+
+	return parser->parse(date_string, current_date, get_weekday(current_date));
+}
+
 bool Date_Factory::is_valid_date(shared_ptr<Date> date) {
 	if (date->year < (current_date->year - valid_yr_range) {	
 		return false;
@@ -66,10 +83,17 @@ bool Date_Factory::is_valid_date(shared_ptr<Date> date) {
 	return true;
 }
 
-shared_ptr<Date> make_date(string date_string) {
-	for (auto &c : date_string)
-		tolower(c);
-	}
+unsigned int Date_Factory::get_weekday(shared_ptr<Date> date) {
+	// Set current_time
+	time_t current_raw = time(0);
+	tm current;
+	localtime_s(&current, &current_raw);	
 
-	return parser->parse(date_string);	
+	current.tm_mday = date->day;
+	current.tm_mon = date->month;
+	current.tm_year = date->year;
+
+	mktime(&current);
+
+	return current.tm_wday;
 }

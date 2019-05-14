@@ -35,10 +35,9 @@ class Weekday_Recurrence : public Recurrence {
 /* Handles recurrences on days of the week */
 	private:
 		std::vector<unsigned int> days;
-		unsigned int idx;
 
 	public:
-		Weekday_Recurrence(std::vector);	
+		Weekday_Recurrence(std::vector<unsigned int>);	
 
 		virtual void recurr(std::shared_ptr<Date>) override;
 };

@@ -7,11 +7,12 @@
 #include "date.h"
 
 #include <string>
+#include <memory>
 
 class Task : Display {
 	private:
 		std::string name;
-		Date due_date;
+		std::shared_ptr<Date> due_date;
 		unsigned int priority;
 		std::string recurrence;
 

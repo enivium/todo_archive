@@ -45,8 +45,8 @@ void Date_Parser::register_next(shared_ptr<Date_Parser> p) {
 }
 		
 /*--- Slash_Dash_Parser Methods ---*/
-shared_ptr<Date> Slash_Dash_Parser::parse(string date_string, shared_ptr<Date> current_date,
-					  unsigned int current_weekday) 
+shared_ptr<Date> Slash_Dash_Parser::parse(string date_string, const shared_ptr<Date> current_date,
+					  const unsigned int current_weekday) 
 {
 /* Handles dates in slash- or dash-separated format */
 	regex r("^\d{1,2}[/\-]\d{1,2}([/\-]\d{2}|\d{4})?$");
@@ -83,8 +83,8 @@ shared_ptr<Date> Slash_Dash_Parser::parse(string date_string, shared_ptr<Date> c
 }
 
 /*--- Month_Word_Parser Methods ---*/
-shared_ptr<Date> Month_Word_Parser::parse (string date_string, shared_ptr<Date> current_date,
-					   unsigned int current_weekday) 
+shared_ptr<Date> Month_Word_Parser::parse (string date_string, const shared_ptr<Date> current_date,
+					   const unsigned int current_weekday) 
 {
 /* Handles dates formatted with the month as a word */
 	string months("january|jan|february|feb|march|mar|april|apr|may|june|jun|july|jul|"
@@ -161,8 +161,8 @@ shared_ptr<Date> Month_Word_Parser::parse (string date_string, shared_ptr<Date> 
 }
 
 /*--- Day_Word_Parser Methods ---*/
-shared_ptr<Date> Day_Word_Parser::parse(string date_string, shared_ptr<Date> current_date,
-					  unsigned int current_weekday) 
+shared_ptr<Date> Day_Word_Parser::parse(string date_string, const shared_ptr<Date> current_date,
+					  const unsigned int current_weekday) 
 {
 /* Handles words that indicate the day */
 	
@@ -217,8 +217,8 @@ shared_ptr<Date> Day_Word_Parser::parse(string date_string, shared_ptr<Date> cur
 }
 
 /*--- Num_Units_Parser Methods ---*/
-shared_ptr<Date> Num_Units_Parser::parse(string date_string, shared_ptr<Date> current_date,
-					  unsigned int current_weekday) 
+shared_ptr<Date> Num_Units_Parser::parse(string date_string, const shared_ptr<Date> current_date,
+					  const unsigned int current_weekday) 
 {
 /* Handles dates set some number of days, weeks, months, or years in the future */
 	regex r("^(in )?\d+ (days?|d|weeks?|wks?|months?|mon|years?|yrs?)$");

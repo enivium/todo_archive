@@ -18,29 +18,34 @@ class Date_Parser {
 
 		void register_next(std::shared_ptr<Date_Parser>) final;
 		virtual std::shared_ptr<Date> parse(std::string, 
-						    std::shared_ptr<Date>, unsigned int) = 0;
+						    const std::shared_ptr<Date>, 
+						    const unsigned int) = 0;
 };	
 
 class Slash_Dash_Parser : public Date_Parser {
 	public:
 		virtual std::shared_ptr<Date> parse(std::string,
-						    std::shared_ptr<Date>, unsigned int) override;
+						    const std::shared_ptr<Date>, 
+						    const unsigned int) override;
 };
 
 class Month_Word_Parser : public Date_Parser {
 	public:
 		virtual std::shared_ptr<Date> parse(std::string,
-						    std::shared_ptr<Date>, unsigned int) override;
+						    const std::shared_ptr<Date>, 
+						    const unsigned int) override;
 };
 
 class Day_Word_Parser : public Date_Parser {
 	public:
 		virtual std::shared_ptr<Date> parse(std::string,
-						    std::shared_ptr<Date>, unsigned int) override;
+						    const std::shared_ptr<Date>, 
+						    const unsigned int) override;
 };
 
 class Num_Units_Parser : public Date_Parser {
 	public:
 		virtual std::shared_ptr<Date> parse(std::string,
-						    std::shared_ptr<Date>, unsigned int) override;
+						    const std::shared_ptr<Date>, 
+						    const unsigned int) override;
 };

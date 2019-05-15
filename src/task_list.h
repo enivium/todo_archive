@@ -4,24 +4,31 @@
 #pragma once
 
 #include "display.h"
-#include "date.h"
 #include "task.h"
+#include "date_factory.h"
 
 #include <map>
 #include <memory>
 #include <string>
+#include <vector>
 
 class Task_List : public Display {
 	protected:
-		// Hold references to tasks with different access methods
+		// Task containers
 		std::multimap<std::string, std::shared_ptr<Task>> tasks_by_name;
-		std::multimap<Date, std::shared_ptr<Task>> tasks_by_date;
+		std::map<Date, std::vector<std::shared_ptr<Task>>> tasks_by_date;
+		bool sort_by_priority(std::shared_ptr<Task> &, std::shared_ptr<Task> &);
 
-		// Hold child Task_Lists
+		// Child and parent lists
 		std::multimap<std::shared_ptr<Task_List>> child_lists;
-
-		// Maintain reference to parent
 		std::shared_ptr<Task_List> parent;
+
+		// Object references
+		std::shared_ptr<Date_Factory> df;
+
+		// State variables
+		shared_ptr<Date> current_view;
+		unsigned int focus_task;
 
 	public:
 		Task_List() = default;
@@ -29,7 +36,10 @@ class Task_List : public Display {
 
 		// Display methods
 		virtual void display_and_prompt() override;
-		virtual void list_display() override;		
+		virtual std::string list_display() override;		
+
+		// Utility methods 
+		const std::shared_ptr<Date> get_current_date();
 
 		// Menu items
 		void add_task();		
@@ -41,4 +51,6 @@ class Task_List : public Display {
 		void list_child_lists();
 		void search();
 		void show_date();	
+
+		void change_task_date(std::shared_ptr<Date>);
 };

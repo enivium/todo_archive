@@ -36,14 +36,13 @@ shared_ptr<Date_Factory> Date_Factory::get_instance() {
 	return instance;
 }
 
-shared_ptr<Date> Date_Factory::get_current_date() {
+const shared_ptr<Date> Date_Factory::get_current_date() {
 	return current_date;
 }
 	
-unsigned int Date_Factory::get_current_weekday() {
+const unsigned int Date_Factory::get_current_weekday() {
 	return current_weekday;
 }
-
 
 shared_ptr<Date> Date_Factory::make_date(string date_string) {
 	for (auto &c : date_string) {

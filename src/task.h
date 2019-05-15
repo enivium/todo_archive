@@ -18,25 +18,33 @@ class Task : public Display {
 		// Variables
 		std::string name;
 		unsigned int priority;
+		bool recurr_from_current;
 
 		// Object references
 		std::shared_ptr<Date> due_date;
 		std::shared_ptr<Recurrence> recurrence;
 		std::shared_ptr<Task_List> parent;
 
+		// Menu and display methods
+		void display_info();
+
 	public:
 		Task() = default;
 		Task(std::string, unsigned int, std::shared_ptr<Date>, std::shared_ptr<Recurrence>,
-		     std::shared_ptr<Task_List>);
+		     bool, std::shared_ptr<Task_List>);
 
 		// Display overrides
 		virtual void display_and_prompt() override;		
-		virtual void list_display() override;
+		virtual std::string list_display() override;
 
 		// Menu option functions
-		void complete_task();
-		void postpone_task();
-		void edit_task();
-		void assign_task();
+		void complete();
+		void reschedule();
+		void edit();
 		void delete_task();
+		void back();
+		void quit();
+
+		// Utility methods
+		std::shared_ptr<Date> prompt_date();
 };

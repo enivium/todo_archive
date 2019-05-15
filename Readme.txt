@@ -38,3 +38,9 @@ Structure:
 	Group, Project, Todo_List inherit from Task_List
 	Display calls on children, everything maintains parent
 	Project can be sequenced/completed
+
+Future growth:
+Add one-line task creation
+Add handling of function keys
+Add mouse and keyboard interaction
+Add undo

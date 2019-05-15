@@ -90,8 +90,8 @@ unsigned int Date_Factory::get_weekday(shared_ptr<Date> date) {
 	localtime_s(&current, &current_raw);	
 
 	current.tm_mday = date->day;
-	current.tm_mon = date->month;
-	current.tm_year = date->year;
+	current.tm_mon = date->month - 1;
+	current.tm_year = date->year - tm_base_yr;
 
 	mktime(&current);
 

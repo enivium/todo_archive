@@ -4,8 +4,8 @@
 #pragma once
 
 #include "display.h"
-#include "task.h"
 #include "date.h"
+#include "task.h"
 
 #include <map>
 #include <memory>
@@ -37,6 +37,7 @@ class Task_List : public Display {
 		void postpone_task();
 		void edit_task();
 		void assign_task();
+		void delete_task();
 		void list_child_lists();
 		void search();
 		void show_date();	

@@ -25,7 +25,40 @@ Weekday_Recurrence::Weekday_Recurrence(vector<unsigned int> d) : days(d) {
 }
 
 void Weekday_Recurrence::recurr(shared_ptr<Date> date) {
-	unsigned int new_day = 0;
+	// Find the index of last occurrence, then go one past
+	unsigned int new_day;
 	unsigned int old_day = df->get_weekday(date);
-	while (new_day < 
-			
+	unsigned int i = 0;
+	do {
+		new_day = days.at(i);	
+		++i;
+	while (new_day < old_day);
+	new_day = days.at(i%days.size());
+
+	string date_string;
+	switch (new_day) {
+		case sunday:
+			date_string = "sunday";
+			break;
+		case monday:
+			date_string = "monday";
+			break;
+		case tuesday:
+			date_string = "tuesday";
+			break;
+		case wednesday:
+			date_string = "wednesday";
+			break;
+		case thursday:
+			date_string = "thursday";
+			break;
+		case friday:
+			date_string = "friday";
+			break;
+		case saturday:
+			date_string = "saturday";
+			break;
+	}		
+
+	date = df->make_date(date_string, date);
+}	

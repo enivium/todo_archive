@@ -58,7 +58,7 @@ shared_ptr<Date> Date_Factory::make_date(string date_string, shared_ptr<Date> re
 		tolower(c);
 	}
 
-	return parser->parse(date_string, current_date, get_weekday(current_date));
+	return parser->parse(date_string, ref_date, get_weekday(ref_date));
 }
 
 bool Date_Factory::is_valid_date(shared_ptr<Date> date) {

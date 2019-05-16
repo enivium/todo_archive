@@ -22,6 +22,48 @@ unsigned int Date::days_in_month() {
 
 
 /*--- General Functions ---*/
+// Useful date-related functions
+int wkdy_to_int(string day) {
+	if (date_string == "sunday" || date_string == "sun") {
+		return sunday;
+	} else if (date_string == "monday" || date_string == "mon") {
+		return monday;
+	} else if (date_string == "tuesday" || date_string == "tue") {
+		return tuesday;
+	} else if (date_string == "wednesday" || date_string == "wed") {
+		return wednesday;
+	} else if (date_string == "thursday" || date_string == "thur" || date_string == "thurs") {
+		return thursday;
+	} else if (date_string == "friday" || date_string == "fri") {
+		return friday;
+	} else if (date_string == "saturday" || date_string == "sat") {
+		return saturday;
+	} else {
+		return -1;
+	}
+}
+
+string wkdy_to_string(unsigned int day) {
+	switch (day) {
+		case sunday:
+			return "sunday";
+		case monday:
+			return "monday";
+		case tuesday:
+			return "tuesday";
+		case wednesday:
+			return "wednesday";
+		case thursday:
+			return "thursday";
+		case friday:
+			return "friday";
+		case saturday:
+			return "sanurday";
+		default:
+			return "";
+	}		
+}
+
 // Comparison operator overloads
 bool operator==(const Date &lhs, const Date &rhs) {
 	return (lhs.day == rhs.day) && 

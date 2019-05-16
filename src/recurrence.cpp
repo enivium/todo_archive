@@ -20,9 +20,11 @@ void Unit_Recurrence::recurr(shared_ptr<Date> date, const shared_ptr<Date> ref_d
 }
 
 string Unit_Recurrence::display_string() {
-	string disp("Every " + to_string(interval) + " " + unit);
+	string disp("Every ");
 	if (unit > 1) {
-		disp += "s";
+		disp += to_string(interval) + " " + unit + "s";
+	} else {
+		disp += unit;
 	}
 
 	return disp;
@@ -44,30 +46,9 @@ void Weekday_Recurrence::recurr(shared_ptr<Date> date, const shared_ptr<Date> re
 	while (new_day < old_day);
 	new_day = days.at(i%days.size());
 
-	string date_string;
-	switch (new_day) {
-		case sunday:
-			date_string = "sunday";
-			break;
-		case monday:
-			date_string = "monday";
-			break;
-		case tuesday:
-			date_string = "tuesday";
-			break;
-		case wednesday:
-			date_string = "wednesday";
-			break;
-		case thursday:
-			date_string = "thursday";
-			break;
-		case friday:
-			date_string = "friday";
-			break;
-		case saturday:
-			date_string = "saturday";
-			break;
-	}		
-
+	string date_string = wkdy_to_string(new_day);
 	date = df->make_date(date_string, ref_date);
 }	
+
+string Unit_Recurrence::display_string() {
+	auto iter = days.begin();

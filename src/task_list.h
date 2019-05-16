@@ -5,7 +5,6 @@
 
 #include "display.h"
 #include "task.h"
-#include "date_factory.h"
 
 #include <map>
 #include <memory>
@@ -20,11 +19,8 @@ class Task_List : public Display {
 		bool sort_by_priority(std::shared_ptr<Task> &, std::shared_ptr<Task> &);
 
 		// Child and parent lists
-		std::multimap<std::shared_ptr<Task_List>> child_lists;
+		std::vector<std::shared_ptr<Task_List>> child_lists;
 		std::shared_ptr<Task_List> parent;
-
-		// Object references
-		std::shared_ptr<Date_Factory> df;
 
 		// State variables
 		shared_ptr<Date> current_view;
@@ -38,8 +34,10 @@ class Task_List : public Display {
 		virtual void display_and_prompt() override;
 		virtual std::string list_display() override;		
 
-		// Utility methods 
+		// Access methods 
 		const std::shared_ptr<Date> get_current_date();
+		const std::shared_ptr<Date> get_current_view();
+		virtual std::vector<std::shared_ptr<Task_List>> get_all_groups() = 0;
 
 		// Menu items
 		void add_task();		

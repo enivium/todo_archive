@@ -3,6 +3,8 @@
 
 #pragma once
 
+#include <string>
+
 // Common calendar info
 enum Weekdays {sunday, monday, tuesday, wednesday, thursday, friday, saturday};
 const unsigned int days_in_months[] = {31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31};
@@ -20,6 +22,10 @@ class Date {
 
 	unsigned int days_in_month();
 };	
+
+// Useful date-related functions
+int wkdy_to_int(std::string);
+std::string wkdy_to_string(unsigned int);
 
 // Date comparison operator overloads
 bool operator==(const Date &lhs, const Date &rhs); 

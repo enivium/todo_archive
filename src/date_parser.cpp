@@ -167,38 +167,18 @@ shared_ptr<Date> Day_Word_Parser::parse(string date_string, const shared_ptr<Dat
 /* Handles words that indicate the day */
 	
 	if (date_string == "today") {
-		return current_date;
+		shared_ptr<Date> new_date(current_date);
+		return new_date;
 	} 
 
-	unsigned int days_to_add;
-	bool day_word = false;
-	
+	int days_to_add;
 	if (date_string == "tomorrow") {
 		days_to_add = 1;
-	} else if (date_string == "sunday" || date_string == "sun") {
-		days_to_add = sunday - current_weekday;
-		day_word = true;
-	} else if (date_string == "monday" || date_string == "mon") {
-		days_to_add = monday - current_weekday;
-		day_word = true;
-	} else if (date_string == "tuesday" || date_string == "tue") {
-		days_to_add = tuesday - current_weekday;
-		day_word = true;
-	} else if (date_string == "wednesday" || date_string == "wed") {
-		days_to_add = wednesday - current_weekday;
-		day_word = true;
-	} else if (date_string == "thursday" || date_string == "thur" || date_string == "thurs") {
-		days_to_add = thursday - current_weekday;
-		day_word = true;
-	} else if (date_string == "friday" || date_string == "fri") {
-		days_to_add = friday - current_weekday;
-		day_word = true;
-	} else if (date_string == "saturday" || date_string == "sat") {
-		days_to_add = saturday - current_weekday;
-		day_word = true;
+	} else {
+		days_to_add = wkdy_to_int(date_string) - current_weekday;
 	}
 
-	if (day_word) {
+	if (days_to_add != -1) {
 		if (days_to_add == 0) {
 			days_to_add = 7;
 		}

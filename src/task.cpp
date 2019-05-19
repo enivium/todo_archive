@@ -18,7 +18,7 @@ void Task::display_info() {
 	printw(name_string.c_str());
 
 	printw("Due Date: ");
-	if (due_date > *(parent->get_current_date)) {
+	if (due_date > *(df->get_current_date)) {
 		attron(COLOR_PAIR(overdue));
 	}
 	string date_string(to_string(due_date->month) + "/" + to_string(due_date->day) + "/" + 
@@ -48,23 +48,6 @@ void Task::display_info() {
 	string group_string(parent->list_display() + "\n");
 	printw(group_string.c_str());
 	attrset(A_NORMAL);
-}
-
-string Task::prompt_string() {
-	char input = 0;
-	string input_str;
-
-	echo();
-	while (input != '\n') {
-		input = getch();
-		refresh();
-		if (input != '\n') {
-			input_str += to_string(input);
-		}
-	}
-	noecho();
-
-	return input_str;
 }
 
 void Task::prompt_name() {
@@ -248,71 +231,32 @@ void Task::prompt_priority() {
 	}
 }
 
-void Task::prompt_group() {
-	printw("Group:\n");
-	
-	bool group_selected = false;
-	while (!group_selected) {
-		string parent_string(parent->list_display());
-		if (parent_string == "") {
-			parent_string = "None";
-		}
-		parent_string = "1) " + parent_string + "\n";
-		printw(parent_string.c_str());
-
-		vector<shared_ptr<Task_List>> children = parent->get_children();
-		unsigned int idx = 2;
-		for (shared_ptr<Task_List> child : children) {
-			string child_string(to_string(idx) + ")\t" + child->list_display() + "\n");
-			printw(child_string.c_str());
-		}
-		
-		bool parent_exists = false; 
-		if (parent->get_parent() != nullptr) {
-			printw("[u]p a level\n");
-			parent_exists = true;
-		}
-
-		string input;
-		regex r;	
-		if (parent_exists) {
-			r.assign("^(\d+|u)$");
-		} else {
-			r.assign("^\d+$");
-		}
-		bool valid_input = false;
-		while (!valid_input) {
-			printw(">");
-			input = prompt_string();
-
-			if (!regex_match(interval_str, r)) {
-				printw("ERROR: Invalid Input!\n");
-				continue;	
-			}
-
-			valid_input = true;
-		}
-
-		if (input == "1") {
-			group_selected = true;	
-		} else if (input == "u") {
-			parent = parent->get_parent();
-		} else {
-			unsigned int new_parent;
-			istringstream input_strm(input);		
-			input_strm >> new_parent;	
-			parent = children.at(new_parent - 2);
-		}
-	}
-}	
-
-Task::Task(shared_ptr<Task_List> pa) : parent(pa) {
+Task::Task(shared_ptr<Task_List> p) : parent(p) {
 	df = Date_Factory::get_instance();
+	erase();
 	prompt_name();
 	prompt_date();
 	prompt_recurrence();
 	prompt_priority();	
-	prompt_group();
+	parent = select_group(parent);
+
+	if (due_date < df->get_current_date()) {
+		overdue = true;
+	} else {
+		overdue = false;
+	}
+}
+
+Task(string n, shared_ptr<Date> d, shared_ptr<Recurrence> r, bool f, shared_ptr<Task_List> p) 
+	: name(n), due_date(d), recurrence(r), recurr_from_current(f), parent(p) 
+{
+	df = Date_Factory::get_instance();	
+	
+	if (due_date < df->get_current_date()) {
+		overdue = true;
+	} else {
+		overdue = false;
+	}
 }
 	
 void Task::display_and_prompt() {
@@ -373,7 +317,7 @@ void Task::complete() {
 	}
 
 	if (recurr_from_current) {
-		recurrence->recurr(due_date, parent->get_current_date());
+		recurrence->recurr(due_date, df->get_current_date());
 	} else {	
 		recurrence->recurr(due_date, due_date);
 	}
@@ -422,7 +366,7 @@ void Task::edit() {
 				break;
 			case 'g':
 				erase();
-				prompt_group();
+				parent = select_group(parent);
 				break;
 		}
 	}
@@ -432,4 +376,12 @@ void Task::edit() {
 	}
 
 	return;
+}
+
+unsigned int Task::get_priority() {
+	return priority;
+}
+
+bool Task::get_overdue() {
+	return overdue;
 }

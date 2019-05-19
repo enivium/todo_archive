@@ -17,7 +17,7 @@ class Recurrence {
 	public:
 		Recurrence();
 	
-		virtual void recurr(std::shared_ptr<Date>, const std::shared_ptr<Date>) = 0;
+		virtual void recurr(std::shared_ptr<Date>, std::shared_ptr<Date>) = 0;
 		virtual std::string display_string() = 0;
 };
 
@@ -30,7 +30,7 @@ class Unit_Recurrence : public Recurrence {
 	public:
 		Unit_Recurrence(unsigned int, std::string);
 
-		virtual void recurr(std::shared_ptr<Date>, const std::shared_ptr<Date>) override;
+		virtual void recurr(std::shared_ptr<Date>, std::shared_ptr<Date>) override;
 		virtual std::string display_string() override;
 };
 
@@ -42,6 +42,6 @@ class Weekday_Recurrence : public Recurrence {
 	public:
 		Weekday_Recurrence(std::vector<unsigned int>);	
 
-		virtual void recurr(std::shared_ptr<Date>, const std::shared_ptr<Date>) override;
+		virtual void recurr(std::shared_ptr<Date>, std::shared_ptr<Date>) override;
 		virtual std::string display_string() override;
 };

@@ -5,8 +5,9 @@
 
 #include "display.h"
 #include "task.h"
+#include "date_factory.h"
 
-#include <map>
+#include <unordered_map>
 #include <memory>
 #include <string>
 #include <vector>
@@ -14,41 +15,51 @@
 class Task_List : public Display {
 	protected:
 		// Task containers
-		std::multimap<std::string, std::shared_ptr<Task>> tasks_by_name;
-		std::map<Date, std::vector<std::shared_ptr<Task>>> tasks_by_date;
+		std::unordered_multimap<std::string, std::shared_ptr<Task>> tasks_by_name;
+		std::unordered_map<Date, std::vector<std::shared_ptr<Task>>> tasks_by_date;
 		bool sort_by_priority(std::shared_ptr<Task> &, std::shared_ptr<Task> &);
 
-		// Child and parent lists
-		std::vector<std::shared_ptr<Task_List>> child_lists;
+		// Object references
+		std::vector<std::shared_ptr<Task_List>> children;
 		std::shared_ptr<Task_List> parent;
+		std::shared_ptr<Date_Factory> df;
 
 		// State variables
-		shared_ptr<Date> current_view;
+		std::shared_ptr<Date> current_view;
 		unsigned int focus_task;
+		char command;
+
+		// Display methods
+		void display_tasks(std::vector<std::shared_ptr>> &);
+		void display_groups(unsigned int);
+
+		// Content methods and menu items
+		void make_group();
+		void erase_group();
+		void erase_group(std::shared_ptr<Task_List>);
+		void remove_child(std::shared_ptr<Task_List>);
+		void search();
+		void present_date();	
+		void view_group();
 
 	public:
-		Task_List() = default;
+		Task_List();
+		Task_List(std::shared_ptr<Task_List>);
 		virtual ~Task_List();
 
 		// Display methods
-		virtual void display_and_prompt() override;
+		virtual void display_and_prompt() = 0;
 		virtual std::string list_display() override;		
 
 		// Access methods 
-		const std::shared_ptr<Date> get_current_date();
-		const std::shared_ptr<Date> get_current_view();
-		virtual std::vector<std::shared_ptr<Task_List>> get_all_groups() = 0;
+		std::shared_ptr<Date> get_current_view();
+		std::vector<std::shared_ptr<Task_List>> & get_children();
+		std::shared_ptr<Task_List> get_parent();
+		void quit();
 
 		// Menu items
-		void add_task();		
-		void complete_task();
-		void postpone_task();
-		void edit_task();
-		void assign_task();
-		void delete_task();
-		void list_child_lists();
-		void search();
-		void show_date();	
-
-		void change_task_date(std::shared_ptr<Date>);
+		virtual void add_task() = 0;		
+		virtual void complete_task() = 0;
+		virtual void reschedule_task() = 0;
+		virtual void delete_task() = 0;
 };

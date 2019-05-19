@@ -49,7 +49,10 @@ Add way to cancel creating/editing tasks
 
 Lessons Learned:
 Use premade stuff as much as possible (tm objects)
-Think about what variables should be const (current_date)
+Think about what variables and methods should be const (current_date)
 Establish MVP and grow from there
 Document and test as you go
-
+Use pointers only where necessary
+Worry about function/readability first, performance later
+Start from interface, work down (task_list.h)
+Minimize assumptions (current_date)

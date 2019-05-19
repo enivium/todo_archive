@@ -15,7 +15,7 @@ Unit_Recurrence::Unit_Recurrence(unsigned int i, string u) : interval(i), unit(u
 	// Empty constructor body
 }
 
-void Unit_Recurrence::recurr(shared_ptr<Date> date, const shared_ptr<Date> ref_date) {
+void Unit_Recurrence::recurr(shared_ptr<Date> date, shared_ptr<Date> ref_date) {
 	date = df->make_date(to_string(interval) + " " + unit, ref_date);	
 }
 
@@ -35,7 +35,7 @@ Weekday_Recurrence::Weekday_Recurrence(vector<unsigned int> d) : days(d) {
 	// Empty constructor body
 }
 
-void Weekday_Recurrence::recurr(shared_ptr<Date> date, const shared_ptr<Date> ref_date) {
+void Weekday_Recurrence::recurr(shared_ptr<Date> date, shared_ptr<Date> ref_date) {
 	// Find the index of last occurrence, then go one past
 	unsigned int new_day;
 	unsigned int old_day = df->get_weekday(ref_date);
@@ -51,4 +51,15 @@ void Weekday_Recurrence::recurr(shared_ptr<Date> date, const shared_ptr<Date> re
 }	
 
 string Unit_Recurrence::display_string() {
-	auto iter = days.begin();
+	string disp;
+	
+	auto iter = days.cbegin();
+	disp += wkdy_to_string(*iter);
+	++iter;
+
+	for (; iter != days.cend(); ++iter) {
+		disp += ", " + wkdy_to_string(*iter);
+	}
+	
+	return disp;
+}

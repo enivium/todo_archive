@@ -1,5 +1,5 @@
 // todo_list.h
-// Todo_List class
+// Core to-do list class
 
 #pragma once
 
@@ -7,7 +7,8 @@
 
 class Todo_List : public Task_List {
 	private:
-		static std::shared_ptr<Todo_List> instance;	// Singleton instance 
+		// Singleton items
+		static std::shared_ptr<Todo_List> instance;
 		Todo_List();
 
 	public:

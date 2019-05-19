@@ -19,9 +19,9 @@ class Task_List;
 class Task : public Display {
 	private:
 		// Variables
-		std::string name;
 		unsigned int priority;
 		bool recurr_from_current;
+		bool overdue;
 
 		// Object references
 		std::shared_ptr<Date> due_date;
@@ -33,17 +33,17 @@ class Task : public Display {
 		void display_info();
 
 		// Prompt methods
-		std::string prompt_string();
 		void prompt_name();
 		void prompt_date();
 		void prompt_recurrence();
 		void prompt_priority();
-		void prompt_group();
 
 	public:
-		Task();
-		Task(std::string, unsigned int, std::shared_ptr<Date>, std::shared_ptr<Recurrence>,
-		     bool, std::shared_ptr<Task_List>);
+		// Constructors
+		Task() = delete;
+		Task(std::shared_ptr<Task_List>);
+		Task(std::string, std::shared_ptr<Date>, std::shared_ptr<Recurrence>, bool,
+		     std::shared_ptr<Task_List>);
 
 		// Display overrides
 		virtual void display_and_prompt() override;		
@@ -53,4 +53,8 @@ class Task : public Display {
 		void complete();
 		void reschedule();
 		void edit();
+
+		// Getters and setters
+		unsigned int get_priority();
+		bool get_overdue();
 };

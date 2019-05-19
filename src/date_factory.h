@@ -24,8 +24,8 @@ class Date_Factory {
 	public:
 		// Retrieve info
 		std::shared_ptr<Date_Factory> get_instance();
-		const std::shared_ptr<Date> get_current_date();		
-		const unsigned int get_current_weekday();
+		std::shared_ptr<Date> get_current_date();		
+		unsigned int get_current_weekday();
 
 		// Make new dates
 		std::shared_ptr<Date> make_date(std::string);   

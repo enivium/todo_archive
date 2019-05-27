@@ -2,6 +2,8 @@
 // Class to represent tasks
 
 #include "task.h"
+#include "task_list.h"
+#include "date.h"
 
 #include <ncurses.h>
 #include <sstream>
@@ -18,7 +20,7 @@ void Task::display_info() {
 	printw(name_string.c_str());
 
 	printw("Due Date: ");
-	if (due_date > *(df->get_current_date)) {
+	if (*due_date > *(df->get_current_date())) {
 		attron(COLOR_PAIR(overdue));
 	}
 	string date_string(to_string(due_date->month) + "/" + to_string(due_date->day) + "/" + 
@@ -59,6 +61,7 @@ void Task::prompt_name() {
 void Task::prompt_date() {
 	printw("Due Date:\n");
 
+	shared_ptr<Date> new_date;
 	bool valid_input = false;
 	while (!valid_input) {
 		printw(">");
@@ -77,7 +80,7 @@ void Task::prompt_date() {
 		valid_input = true;
 	}
 
-	date = new_date;
+	due_date = new_date;
 }
 
 void Task::prompt_recurrence() {
@@ -107,9 +110,9 @@ void Task::prompt_recurrence() {
 			string wday;
 			while (wdays_strm >> wday) {
 				for (auto &c : wday) {
-					tolower(c);
+					c = tolower(c);
 				}
-				int wday_int = wkday_to_int(wday);
+				int wday_int = wkdy_to_int(wday);
 				if (wday_int != -1) {
 					wdays_set.insert(wday_int);
 				}
@@ -123,10 +126,10 @@ void Task::prompt_recurrence() {
 			valid_input = true;
 		}
 
-		vector<unsigned int> wday_vec;
-		copy(wdays_set.begin(), wdays_set.end(), back_inserter(wday_vec)); 
+		vector<unsigned int> wdays_vec;
+		copy(wdays_set.begin(), wdays_set.end(), back_inserter(wdays_vec)); 
 		sort(wdays_vec.begin(), wdays_vec.end());
-		recurrence = make_shared<Weekday_Recurrence(wdays_vec);
+		recurrence = make_shared<Weekday_Recurrence>(wdays_vec);
 	} else if (input == 'i') {
 		char u = 0;
 
@@ -159,7 +162,7 @@ void Task::prompt_recurrence() {
 
 		printw("Interval:\n");
 		string interval_str;
-		regex r("^\d+$");	
+		regex r("^\\d+$");	
 
 		bool valid_input = false;
 		while (!valid_input) {
@@ -200,6 +203,7 @@ void Task::prompt_recurrence() {
 		} else {
 			recurr_from_current = false;
 		}
+	}
 }
 
 void Task::prompt_priority() {
@@ -246,10 +250,12 @@ Task::Task(shared_ptr<Task_List> p) : parent(p) {
 		overdue = false;
 	}
 }
-
-Task(string n, shared_ptr<Date> d, shared_ptr<Recurrence> r, bool f, shared_ptr<Task_List> p) 
-	: name(n), due_date(d), recurrence(r), recurr_from_current(f), parent(p) 
+/*
+Task::Task(string n, shared_ptr<Date> d, shared_ptr<Recurrence> r, bool f, shared_ptr<Task_List> p) 
+	: due_date(d), recurrence(r), recurr_from_current(f), parent(p) 
 {
+	name = n;
+
 	df = Date_Factory::get_instance();	
 	
 	if (due_date < df->get_current_date()) {
@@ -258,6 +264,7 @@ Task(string n, shared_ptr<Date> d, shared_ptr<Recurrence> r, bool f, shared_ptr<
 		overdue = false;
 	}
 }
+*/
 	
 void Task::display_and_prompt() {
 	char command = 0;
@@ -286,10 +293,10 @@ void Task::display_and_prompt() {
 				reschedule();
 				break;
 			case 'e':
-				postpone();
+				edit();
 				break;
 			case 'd':
-				parent->delete_task();
+				delete_task();
 				return;
 		}
 	}
@@ -311,10 +318,14 @@ string Task::list_display() {
 }
 
 void Task::complete() {
+	shared_ptr<Task> self(this);
+
 	if (recurrence == nullptr) {
-		parent->delete_task();			
+		parent->delete_task(self);			
 		return;
 	}
+
+	Date old_date = *due_date;
 
 	if (recurr_from_current) {
 		recurrence->recurr(due_date, df->get_current_date());
@@ -322,13 +333,21 @@ void Task::complete() {
 		recurrence->recurr(due_date, due_date);
 	}
 
-	parent->change_task_date(due_date);
+	parent->reschedule_task(self, old_date);
 }
 
 void Task::reschedule() {
+	Date old_date = *due_date;
 	erase();
 	prompt_date();	
-	parent->change_task_date(due_date);
+
+	shared_ptr<Task> self(this);
+	parent->reschedule_task(self, old_date);
+}
+
+void Task::delete_task() {
+	shared_ptr<Task> self(this);
+	parent->delete_task(self);
 }
 
 void Task::edit() {
@@ -384,4 +403,16 @@ unsigned int Task::get_priority() {
 
 bool Task::get_overdue() {
 	return overdue;
+}
+
+string Task::get_name() {
+	return name;
+}
+
+shared_ptr<Date> Task::get_due_date() {
+	return due_date;
+}
+
+void Task::set_group(shared_ptr<Task_List> group) {
+	parent = group;
 }

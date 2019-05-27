@@ -23,7 +23,7 @@ class Date_Factory {
 
 	public:
 		// Retrieve info
-		std::shared_ptr<Date_Factory> get_instance();
+		static std::shared_ptr<Date_Factory> get_instance();
 		std::shared_ptr<Date> get_current_date();		
 		unsigned int get_current_weekday();
 

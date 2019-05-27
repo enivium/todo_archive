@@ -9,14 +9,13 @@
 #include <string>
 
 class Date_Parser {
-	private:
-		std::shared_ptr<Date_Parser> next;
 	protected:
+		std::shared_ptr<Date_Parser> next;
 		static void add_days(std::shared_ptr<Date>, unsigned int);
 	public:
 		Date_Parser();
 
-		void register_next(std::shared_ptr<Date_Parser>) final;
+		void register_next(std::shared_ptr<Date_Parser>);
 		virtual std::shared_ptr<Date> parse(std::string, std::shared_ptr<Date>, 
 						    unsigned int) = 0;
 };	

@@ -9,9 +9,9 @@ class Todo_List : public Task_List {
 	private:
 		// Singleton items
 		static std::shared_ptr<Todo_List> instance;
-		Todo_List();
+		Todo_List() = default;
 
 	public:
-		std::shared_ptr<Todo_List> init();
-		virtual ~Todo_List();
+		static std::shared_ptr<Todo_List> init();
+		virtual ~Todo_List() = default;
 };

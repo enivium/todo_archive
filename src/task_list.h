@@ -17,7 +17,7 @@ class Task_List : public Display {
 		// Task containers
 		std::unordered_multimap<std::string, std::shared_ptr<Task>> tasks_by_name;
 		std::unordered_map<Date, std::vector<std::shared_ptr<Task>>> tasks_by_date;
-		bool sort_by_priority(std::shared_ptr<Task> &, std::shared_ptr<Task> &);
+		static bool sort_by_priority(std::shared_ptr<Task> &, std::shared_ptr<Task> &);
 
 		// Object references
 		std::vector<std::shared_ptr<Task_List>> children;
@@ -26,11 +26,11 @@ class Task_List : public Display {
 
 		// State variables
 		std::shared_ptr<Date> current_view;
-		unsigned int focus_task;
 		char command;
 
 		// Display methods
-		void display_tasks(std::vector<std::shared_ptr>> &);
+		void display_tasks(std::vector<std::shared_ptr<Task>> &);
+		unsigned int select_task(unsigned int);
 		void display_groups(unsigned int);
 
 		// Content methods and menu items
@@ -45,10 +45,10 @@ class Task_List : public Display {
 	public:
 		Task_List();
 		Task_List(std::shared_ptr<Task_List>);
-		virtual ~Task_List();
+		virtual ~Task_List() = default;
 
 		// Display methods
-		virtual void display_and_prompt() = 0;
+		virtual void display_and_prompt() override;
 		virtual std::string list_display() override;		
 
 		// Access methods 
@@ -58,8 +58,14 @@ class Task_List : public Display {
 		void quit();
 
 		// Menu items
-		virtual void add_task() = 0;		
-		virtual void complete_task() = 0;
-		virtual void reschedule_task() = 0;
-		virtual void delete_task() = 0;
+		void add_task();		
+		void add_task(std::shared_ptr<Task>);
+		void complete_task(std::vector<std::shared_ptr<Task>> &);
+		void reschedule_task(std::vector<std::shared_ptr<Task>> &);
+		void delete_task(std::vector<std::shared_ptr<Task>> &);
+		void focus_task(std::vector<std::shared_ptr<Task>> &);
+
+		// Task methods
+		void reschedule_task(std::shared_ptr<Task>, Date &);	
+		void delete_task(std::shared_ptr<Task>);
 };

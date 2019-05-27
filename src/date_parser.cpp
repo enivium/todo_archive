@@ -49,7 +49,7 @@ shared_ptr<Date> Slash_Dash_Parser::parse(string date_string, shared_ptr<Date> c
 					  unsigned int current_weekday) 
 {
 /* Handles dates in slash- or dash-separated format */
-	regex r("^\d{1,2}[/\-]\d{1,2}([/\-]\d{2}|\d{4})?$");
+	regex r("^\\d{1,2}[/\\-]\\d{1,2}([/\\-]\\d{2}|\\d{4})?$");
 	
 	if (regex_match(date_string, r)) {
 		replace(date_string.begin(), date_string.end(), '/', ' ');
@@ -57,11 +57,11 @@ shared_ptr<Date> Slash_Dash_Parser::parse(string date_string, shared_ptr<Date> c
 		istringstream date_strm(date_string);
 
 		shared_ptr<Date> new_date = make_shared<Date>();	
-		date_string >> new_date->month >> new_date->day;
+		date_strm >> new_date->month >> new_date->day;
 
 		unsigned int yr;
 		// Check if year not provided
-		if(!(date_string >> yr)) {
+		if(!(date_strm >> yr)) {
 			yr = current_date->year;
 		}	
 
@@ -76,7 +76,7 @@ shared_ptr<Date> Slash_Dash_Parser::parse(string date_string, shared_ptr<Date> c
 	}
 
 	if (next != nullptr) {
-		return next->parse(date_string);
+		return next->parse(date_string, current_date, current_weekday);
 	}
 
 	return nullptr;
@@ -89,8 +89,8 @@ shared_ptr<Date> Month_Word_Parser::parse (string date_string, shared_ptr<Date> 
 /* Handles dates formatted with the month as a word */
 	string months("january|jan|february|feb|march|mar|april|apr|may|june|jun|july|jul|"
 		      "august|aug|september|sept|sep|october|oct|november|novdecember|dec");
-	string days("\d?(\d|1st|2nd|3rd|4th|5th|6th|7th|8th|9th|0th)");
-	string years("'?\d{2}|\d{4}");
+	string days("\\d?(\\d|1st|2nd|3rd|4th|5th|6th|7th|8th|9th|0th)");
+	string years("'?\\d{2}|\\d{4}");
 
 	regex r("^(" + months + ") " + days + ",? (" + years + ")?$|"
 		"^" + days + " (" + months + ") (" + years + ")?$|");
@@ -98,7 +98,7 @@ shared_ptr<Date> Month_Word_Parser::parse (string date_string, shared_ptr<Date> 
 	if (regex_match(date_string, r)) {
 		// Configure regex searches and use to extract info
 		regex month_regex(months);
-		regex num_regex("\d+");
+		regex num_regex("\\d+");
 
 		smatch month_match;
 		smatch num_match;	
@@ -128,7 +128,7 @@ shared_ptr<Date> Month_Word_Parser::parse (string date_string, shared_ptr<Date> 
 			new_date->month = 8;
 		} else if (m == "september" || m == "sept" || m == "sep") {
 			new_date->month = 9;
-		} else if (m == "october" || m == "oct")
+		} else if (m == "october" || m == "oct") {
 			new_date->month = 10;
 		} else if (m == "november" || m == "nov") {
 			new_date->month = 11;
@@ -139,7 +139,7 @@ shared_ptr<Date> Month_Word_Parser::parse (string date_string, shared_ptr<Date> 
 		string d;
 		string y;
 
-		auto iter = num_match.begin()
+		auto iter = num_match.begin();
 		d = *iter;
 		++iter;
 		y = *iter;
@@ -154,7 +154,7 @@ shared_ptr<Date> Month_Word_Parser::parse (string date_string, shared_ptr<Date> 
 	}
 
 	if (next != nullptr) {
-		return next->parse(date_string);
+		return next->parse(date_string, current_date, current_weekday);
 	}
 
 	return nullptr;
@@ -190,7 +190,7 @@ shared_ptr<Date> Day_Word_Parser::parse(string date_string, shared_ptr<Date> cur
 	}
 
 	if (next != nullptr) {
-		return next->parse(date_string);
+		return next->parse(date_string, current_date, current_weekday);
 	}
 
 	return nullptr;
@@ -201,7 +201,7 @@ shared_ptr<Date> Num_Units_Parser::parse(string date_string, shared_ptr<Date> cu
 					  unsigned int current_weekday) 
 {
 /* Handles dates set some number of days, weeks, months, or years in the future */
-	regex r("^(in )?\d+ (days?|d|weeks?|wks?|months?|mon|years?|yrs?)$");
+	regex r("^(in )?\\d+ (days?|d|weeks?|wks?|months?|mon|years?|yrs?)$");
 	
 	if (regex_match(date_string, r)) {
 		istringstream date_strm(date_string);
@@ -237,7 +237,7 @@ shared_ptr<Date> Num_Units_Parser::parse(string date_string, shared_ptr<Date> cu
 	}
 
 	if (next != nullptr) {
-		return next->parse(date_string);
+		return next->parse(date_string, current_date, current_weekday);
 	}
 
 	return nullptr;

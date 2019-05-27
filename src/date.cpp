@@ -23,7 +23,7 @@ unsigned int Date::days_in_month() {
 
 /*--- General Functions ---*/
 // Useful date-related functions
-int wkdy_to_int(string day) {
+int wkdy_to_int(string date_string) {
 	if (date_string == "sunday" || date_string == "sun") {
 		return sunday;
 	} else if (date_string == "monday" || date_string == "mon") {

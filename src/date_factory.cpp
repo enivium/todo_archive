@@ -3,23 +3,25 @@
 
 #include "date_factory.h"
 
+#include <ctime>
+
 using namespace std;
 
 // Set static variable to nullptr until called
-Date_Factory::instance = nullptr;
+shared_ptr<Date_Factory> Date_Factory::instance = nullptr;
 
 /*--- Date_Factory Methods ---*/
 Date_Factory::Date_Factory() {
 	// Set current_time
 	time_t current_raw = time(0);
-	tm current;
-	localtime_s(&current, &current_raw);	
+	tm *current;
+	current = localtime(&current_raw);	
 
 	current_date = make_shared<Date>();
-	current_date->day = current.tm_mday;		
-	current_date->month = current.tm_mon + 1;
-	current_date->year = current.tm_year + tm_base_yr;
-	current_weekday = current.tm_wday;
+	current_date->day = current->tm_mday;		
+	current_date->month = current->tm_mon + 1;
+	current_date->year = current->tm_year + tm_base_yr;
+	current_weekday = current->tm_wday;
 
 	// Create parser chain
 	parser = make_shared<Day_Word_Parser>();
@@ -30,7 +32,8 @@ Date_Factory::Date_Factory() {
 
 shared_ptr<Date_Factory> Date_Factory::get_instance() {
 	if (instance == nullptr) {
-		instance = make_shared<Date_Factory>();
+		shared_ptr<Date_Factory> inter(new Date_Factory());
+		instance = inter;
 	}
 
 	return instance;
@@ -46,7 +49,7 @@ unsigned int Date_Factory::get_current_weekday() {
 
 shared_ptr<Date> Date_Factory::make_date(string date_string) {
 	for (auto &c : date_string) {
-		tolower(c);
+		c = tolower(c);
 	}
 
 	return parser->parse(date_string, current_date, current_weekday);	
@@ -54,14 +57,14 @@ shared_ptr<Date> Date_Factory::make_date(string date_string) {
 
 shared_ptr<Date> Date_Factory::make_date(string date_string, shared_ptr<Date> ref_date) {
 	for (auto &c : date_string) {
-		tolower(c);
+		c = tolower(c);
 	}
 
 	return parser->parse(date_string, ref_date, get_weekday(ref_date));
 }
 
 bool Date_Factory::is_valid_date(shared_ptr<Date> date) {
-	if (date->year < (current_date->year - valid_yr_range) {	
+	if (date->year < current_date->year - valid_yr_range) {	
 		return false;
 	}
 
@@ -85,14 +88,14 @@ bool Date_Factory::is_valid_date(shared_ptr<Date> date) {
 unsigned int Date_Factory::get_weekday(shared_ptr<Date> date) {
 	// Set current_time
 	time_t current_raw = time(0);
-	tm current;
-	localtime_s(&current, &current_raw);	
+	tm *current;
+	current = localtime(&current_raw);	
 
-	current.tm_mday = date->day;
-	current.tm_mon = date->month - 1;
-	current.tm_year = date->year - tm_base_yr;
+	current->tm_mday = date->day;
+	current->tm_mon = date->month - 1;
+	current->tm_year = date->year - tm_base_yr;
 
-	mktime(&current);
+	mktime(current);
 
-	return current.tm_wday;
+	return current->tm_wday;
 }

@@ -42,8 +42,10 @@ class Task : public Display {
 		// Constructors
 		Task() = delete;
 		Task(std::shared_ptr<Task_List>);
+/*
 		Task(std::string, std::shared_ptr<Date>, std::shared_ptr<Recurrence>, bool,
 		     std::shared_ptr<Task_List>);
+*/
 
 		// Display overrides
 		virtual void display_and_prompt() override;		
@@ -53,8 +55,12 @@ class Task : public Display {
 		void complete();
 		void reschedule();
 		void edit();
+		void delete_task();
 
 		// Getters and setters
 		unsigned int get_priority();
 		bool get_overdue();
+		std::string get_name();
+		std::shared_ptr<Date> get_due_date();
+		void set_group(std::shared_ptr<Task_List>);
 };

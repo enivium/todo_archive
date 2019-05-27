@@ -2,6 +2,10 @@
 // Class for items that can be displayed and have menu options
 
 #include "display.h"
+#include "task_list.h"
+
+#include <ncurses.h>
+#include <regex>
 
 using namespace std;
 
@@ -22,11 +26,10 @@ string Display::prompt_string() {
 	return input_str;
 }
 
-shared_ptr<Task_List> select_group(shared_ptr<Task_List> base) {
+shared_ptr<Task_List> Display::select_group(shared_ptr<Task_List> base) {
 	printw("Group:\n");
-	bool group_selected = false;
-	while (!group_selected) {
-		string base_str(base->list_display());
+	while (true) {
+		string base_string(base->list_display());
 		if (base_string == "") {
 			base_string = "None";
 		}
@@ -47,6 +50,7 @@ shared_ptr<Task_List> select_group(shared_ptr<Task_List> base) {
 		}
 
 		string input;
+		unsigned int selected;
 		regex r;	
 		if (parent_exists) {
 			r.assign("^(\d+|u)$");
@@ -58,9 +62,16 @@ shared_ptr<Task_List> select_group(shared_ptr<Task_List> base) {
 			printw(">");
 			input = prompt_string();
 
-			if (!regex_match(interval_str, r)) {
+			if (!regex_match(input, r)) {
 				printw("ERROR: Invalid Input!\n");
 				continue;	
+			}
+
+			istringstream input_strm(input);		
+			input_strm >> selected;	
+			if (selected > children.size() + 1) {
+				printw("ERROR: Invalid Input!\n");
+				continue;
 			}
 
 			valid_input = true;
@@ -71,9 +82,6 @@ shared_ptr<Task_List> select_group(shared_ptr<Task_List> base) {
 		} else if (input == "u") {
 			base = base->get_parent();
 		} else {
-			unsigned int selected;
-			istringstream input_strm(input);		
-			input_strm >> selected;	
 			base = children.at(selected - 2);
 		}
 	}
